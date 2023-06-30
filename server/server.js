@@ -1,19 +1,18 @@
-import mongodb from "mongodb";
-import dotenv from "dotenv";
-import app from "./index.js";
+const mongoose = require("mongoose");
+const app = require("./index");
+const dotenv = require("dotenv");
 dotenv.config();
-const MongoClient = mongodb.MongoClient;
-const port = process.env.PORT || 8000;
-
-MongoClient.connect(process.env.DB_URI)
-  .catch((err) => {
-    console.log(err.stack);
-    process.exit(1);
-  })
-  .then(async (client) => {
-    app.listen(port, () => {
-      console.log(`listening on port ${port}`);
-    });
-  });
-
+const port = process.env.PORT;
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.DB_URI);
+    console.log(`DB Connected ${conn.connection.host}`);
+  } catch (err) {
+    console.log(err);
+  }
+};
+connectDB();
+app.listen(port, () => {
+  console.log(`App is listening on port: ${port}`);
+});
 // export default server;

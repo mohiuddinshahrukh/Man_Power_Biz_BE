@@ -1,16 +1,20 @@
-import express from "express";
-import cors from "cors";
-import router from "../routes/routes.js";
-
+const express = require("express");
+const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/api/v1/urbanservices", router);
+app.use(express.urlencoded({ extended: false }));
+
+app.use("/api/v1/urbanservices", () => {
+  console.log("do something");
+});
+
+app.use("/api/v1/users", require("../routes/userRoutes.js"));
+app.use("/api/v1/admin", require("../routes/admin-routes/getAllUsersRoute.js"));
 app.use("*", (req, res) => {
   res.status(404).json({
     error: "Route not found",
     status: 404,
   });
 });
-
-export default app;
+module.exports = app;
