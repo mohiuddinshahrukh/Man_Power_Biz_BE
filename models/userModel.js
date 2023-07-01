@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema(
     email: {
       type: String,
       required: [true, "Please provide a email"],
+      immutable: [true, "Sorry, email cannot be changed"],
     },
     contactNumber: {
       type: String,
@@ -23,10 +24,12 @@ const userSchema = mongoose.Schema(
     },
     userType: {
       type: String,
-      required: [true, "Please select a user type"],
+      required: false,
+      default: "customer",
     },
     status: {
       type: Boolean,
+      required: false,
       default: true,
     },
     image: {

@@ -10,7 +10,7 @@ app.use("/api/v1/urbanservices", () => {
 });
 
 app.use("/api/v1/users", require("../routes/userRoutes.js"));
-app.use("/api/v1/admin", require("../routes/admin-routes/getAllUsersRoute.js"));
+app.use("/api/v1/admin", require("../routes/admin-routes/userRoutes.js"));
 app.use("*", (req, res) => {
   res.status(404).json({
     error: "Route not found",
