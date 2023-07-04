@@ -9,7 +9,7 @@ const deleteUser = asyncHandler(async (req, res) => {
       res.json({
         status: 400,
         error: true,
-        msg: `Please provide a user id to update a user`,
+        msg: `Please provide a user id to delete a user`,
       });
     } else {
       const userToDelete = await User.findById(req.params.id);

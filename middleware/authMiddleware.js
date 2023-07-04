@@ -45,7 +45,20 @@ const adminProtect = asyncHandler(async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET_ADMIN);
       console.log("This is the decoded token: ", decoded);
-      next();
+      console.log("This is the decoded ID: ", decoded.id);
+
+      let user = await User.findById(decoded.id);
+      if (!user) {
+        res.json({
+          status: 400,
+          error: true,
+          msg: `A user with the id: ${req.params.id} couldn't be found!`,
+        });
+      } else {
+        console.log("USER: ", user);
+        req.user = user;
+        next();
+      }
     } catch (err) {
       console.log(err);
       res.status(401).json({

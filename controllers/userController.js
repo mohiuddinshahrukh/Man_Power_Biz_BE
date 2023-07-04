@@ -72,6 +72,11 @@ const addUser = asyncHandler(async (req, res) => {
     }
   } catch (err) {
     console.log("Error: ", err);
+    res.json({
+      status: 400,
+      error: true,
+      msg: `The following error occurred: ${err}`,
+    });
   }
 });
 

@@ -9,6 +9,8 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Please provide a email"],
       immutable: [true, "Sorry, email cannot be changed"],
+      unique: true,
+      lowercase: true,
     },
     contactNumber: {
       type: String,
