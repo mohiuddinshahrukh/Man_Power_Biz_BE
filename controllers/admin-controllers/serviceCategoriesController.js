@@ -60,7 +60,7 @@ const getAServiceCateogry = asyncHandler(async (req, res) => {
 const addServiceCategory = asyncHandler(async (req, res) => {
   try {
     let { id } = req.user;
-    const { categoryTitle, categoryDescription } = req.body;
+    const { categoryTitle, categoryDescription, image } = req.body;
 
     if (!categoryTitle || !categoryDescription || !id) {
       res.json({
@@ -73,6 +73,7 @@ const addServiceCategory = asyncHandler(async (req, res) => {
         categoryTitle,
         categoryDescription,
         addedBy: id,
+        image: image ? image : "",
       });
       if (serviceCategory) {
         res.status(201).json({
@@ -205,7 +206,6 @@ const deleteServiceCategory = asyncHandler(async (req, res) => {
     });
   }
 });
-
 
 module.exports = {
   getAllServiceCateogries,
