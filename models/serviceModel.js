@@ -44,11 +44,11 @@ const serviceSchema = mongoose.Schema(
     serviceVideos: [{ type: String }],
     serviceCoverImage: {
       type: String,
-      required: [true, "Please provide a cover image"],
+      required: [false, "Please provide a cover image"],
     },
     serviceAddress: {
       type: String,
-      required: [true, "Please provide an address for the service"],
+      required: [false, "Please provide an address for the service"],
     },
     serviceContactPhone: {
       type: String,

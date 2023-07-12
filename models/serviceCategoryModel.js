@@ -17,7 +17,7 @@ const serviceCategoryModel = mongoose.Schema(
       required: [true, "The admin id is required to add this data"],
     },
     image: {
-      type: String,
+      type: [String],
       required: [false, "Please provide cover image for the service category"],
     },
     status: {

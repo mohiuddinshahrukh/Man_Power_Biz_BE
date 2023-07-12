@@ -64,11 +64,14 @@ const addService = asyncHandler(async (req, res) => {
       serviceCategory,
       serviceCity,
       serviceZipCode,
-      serviceAddress,
       serviceContactPhone,
       serviceWhatsAppPhone,
       serviceInfoEmail,
+      serviceImages,
+      serviceVideos,
       serviceCoverImage,
+      serviceAddress,
+      
     } = req.body;
 
     if (
@@ -78,11 +81,9 @@ const addService = asyncHandler(async (req, res) => {
       !serviceCategory ||
       !serviceCity ||
       !serviceZipCode ||
-      !serviceAddress ||
       !serviceContactPhone ||
       !serviceWhatsAppPhone ||
-      !serviceInfoEmail ||
-      !serviceCoverImage
+      !serviceInfoEmail
     ) {
       res.json({
         status: 400,
@@ -102,6 +103,8 @@ const addService = asyncHandler(async (req, res) => {
         serviceZipCode: serviceZipCode,
         serviceCity: serviceCity,
         serviceCoverImage: serviceCoverImage,
+        serviceImages: serviceImages ? serviceImages : [],
+        serviceVideos: serviceVideos ? serviceVideos : [],
       });
       if (service) {
         res.status(201).json({
