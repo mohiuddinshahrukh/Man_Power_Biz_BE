@@ -12,11 +12,11 @@ const packageSchema = mongoose.Schema(
       required: [true, "Please provide a package title"],
       unique: true,
     },
-    pacakgeDescription: {
+    packageDescription: {
       type: String,
       required: [true, "Please provide a package description"],
     },
-    pakagePrice: {
+    packagePrice: {
       type: Number,
       required: [true, "Please provide a package price"],
     },
@@ -28,6 +28,11 @@ const packageSchema = mongoose.Schema(
       type: String,
     },
     packageImages: [
+      {
+        type: String,
+      },
+    ],
+    packageVideos: [
       {
         type: String,
       },

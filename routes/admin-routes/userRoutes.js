@@ -24,6 +24,8 @@ const {
 } = require("../../controllers/admin-controllers/serviceController");
 const getAllPackages = require("../../controllers/admin-controllers/package-controllers/getAllPackagesController");
 const getAPackage = require("../../controllers/admin-controllers/package-controllers/getAPackageController");
+const addPackage = require("../../controllers/admin-controllers/package-controllers/addPackageController");
+const deletePackage = require("../../controllers/admin-controllers/package-controllers/deletePackageController");
 const router = express.Router();
 
 // User routes
@@ -53,4 +55,6 @@ router.delete("/deleteService/:id", adminProtect, deleteService);
 // Package
 router.get("/getAllPackages", adminProtect, getAllPackages);
 router.get("/getAPackage/:id", adminProtect, getAPackage);
+router.post("/addPackage", adminProtect, addPackage);
+router.delete("/deletePackage/:id", adminProtect, deletePackage);
 module.exports = router;
