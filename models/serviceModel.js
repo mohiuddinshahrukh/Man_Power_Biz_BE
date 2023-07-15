@@ -42,6 +42,7 @@ const serviceSchema = mongoose.Schema(
     },
     serviceImages: [{ type: String }],
     serviceVideos: [{ type: String }],
+    servicePDF: [{ type: String }],
     serviceCoverImage: {
       type: String,
       required: [false, "Please provide a cover image"],

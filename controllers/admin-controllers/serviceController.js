@@ -69,6 +69,7 @@ const addService = asyncHandler(async (req, res) => {
       serviceInfoEmail,
       serviceImages,
       serviceVideos,
+      servicePDF,
       serviceCoverImage,
       serviceAddress,
       
@@ -105,6 +106,7 @@ const addService = asyncHandler(async (req, res) => {
         serviceCoverImage: serviceCoverImage,
         serviceImages: serviceImages ? serviceImages : [],
         serviceVideos: serviceVideos ? serviceVideos : [],
+        servicePDF: servicePDF ? servicePDF : [],
       });
       if (service) {
         res.status(201).json({

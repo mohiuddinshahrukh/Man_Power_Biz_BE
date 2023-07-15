@@ -22,6 +22,8 @@ const {
   updateService,
   deleteService,
 } = require("../../controllers/admin-controllers/serviceController");
+const getAllPackages = require("../../controllers/admin-controllers/package-controllers/getAllPackagesController");
+const getAPackage = require("../../controllers/admin-controllers/package-controllers/getAPackageController");
 const router = express.Router();
 
 // User routes
@@ -48,4 +50,7 @@ router.post("/addService", adminProtect, addService);
 router.put("/updateService/:id", adminProtect, updateService);
 router.delete("/deleteService/:id", adminProtect, deleteService);
 
+// Package
+router.get("/getAllPackages", adminProtect, getAllPackages);
+router.get("/getAPackage/:id", adminProtect, getAPackage);
 module.exports = router;
