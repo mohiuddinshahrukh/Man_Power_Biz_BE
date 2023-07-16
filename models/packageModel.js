@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 const packageSchema = mongoose.Schema(
   {
     packageService: {
-      unique: true,
       type: Schema.Types.ObjectId,
       ref: "Service",
+      required: [true, "Please provide a package service"],
     },
     packageTitle: {
       type: String,
@@ -37,7 +37,12 @@ const packageSchema = mongoose.Schema(
         type: String,
       },
     ],
-    packageBookings: {},
+    packageBookings: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Booking",
+      },
+    ],
   },
   {
     timestamps: true,

@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Package = require("../../../models/packageModel");
-
+const Service = require("../../../models/serviceModel");
+const mongoose = require("mongoose");
 const addPackage = asyncHandler(async (req, res) => {
   try {
     if (!req.body) {
@@ -21,37 +22,60 @@ const addPackage = asyncHandler(async (req, res) => {
         packageVideos,
         packageBookings,
       } = req.body;
-      if (!packageTitle || !packageDescription || !packagePrice) {
+      if (
+        !packageService ||
+        !packageTitle ||
+        !packageDescription ||
+        !packagePrice
+      ) {
         res.json({
           status: 400,
           error: true,
-          msg: `Pacakge title, description and price are required`,
+          msg: `Package service, title, description and price are required`,
         });
       } else {
-        let createdPackage = await Package.create({
-          packageService,
-          packageTitle,
-          packageDescription,
-          packagePrice,
-          packageStatus,
-          packageCoverImage,
-          packageImages,
-          packageVideos,
-          packageBookings,
-        });
-        if (!createdPackage) {
+        if (!mongoose.Types.ObjectId.isValid(packageService)) {
           res.json({
             status: 400,
             error: true,
-            msg: `Package couldn't be added`,
+            msg: `The provided service id is not of mongoose type`,
           });
         } else {
-          res.json({
-            status: 201,
-            error: false,
-            data: createdPackage,
-            msg: `Package created successfully`,
-          });
+          let getService = await Service.findById(packageService);
+          if (!getService) {
+            res.json({
+              status: 400,
+              error: true,
+              msg: `A service with the provided id: ${packageService} doesn't exist`,
+            });
+          } else {
+            let createdPackage = await Package.create({
+              packageService,
+              packageTitle,
+              packageDescription,
+              packagePrice,
+              packageStatus,
+              packageCoverImage:
+                packageImages?.length > 0 ? packageImages[0] : "",
+              packageImages,
+              packageVideos,
+              packageBookings,
+            });
+            if (!createdPackage) {
+              res.json({
+                status: 400,
+                error: true,
+                msg: `Package couldn't be added`,
+              });
+            } else {
+              res.json({
+                status: 201,
+                error: false,
+                data: createdPackage,
+                msg: `Package created successfully`,
+              });
+            }
+          }
         }
       }
     }

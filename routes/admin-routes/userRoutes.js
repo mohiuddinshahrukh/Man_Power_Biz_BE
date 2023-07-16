@@ -26,6 +26,12 @@ const getAllPackages = require("../../controllers/admin-controllers/package-cont
 const getAPackage = require("../../controllers/admin-controllers/package-controllers/getAPackageController");
 const addPackage = require("../../controllers/admin-controllers/package-controllers/addPackageController");
 const deletePackage = require("../../controllers/admin-controllers/package-controllers/deletePackageController");
+const updatePackage = require("../../controllers/admin-controllers/package-controllers/editPackageController");
+const getAllBookings = require("../../controllers/admin-controllers/booking-controllers/getAllBookings");
+const addBooking = require("../../controllers/admin-controllers/booking-controllers/addBooking");
+const updateBooking = require("../../controllers/admin-controllers/booking-controllers/updateBooking");
+const getABooking = require("../../controllers/admin-controllers/booking-controllers/getAbooking");
+const deleteBooking = require("../../controllers/admin-controllers/booking-controllers/deleteBooking");
 const router = express.Router();
 
 // User routes
@@ -56,5 +62,13 @@ router.delete("/deleteService/:id", adminProtect, deleteService);
 router.get("/getAllPackages", adminProtect, getAllPackages);
 router.get("/getAPackage/:id", adminProtect, getAPackage);
 router.post("/addPackage", adminProtect, addPackage);
+router.put("/editPackage/:id", adminProtect, updatePackage);
 router.delete("/deletePackage/:id", adminProtect, deletePackage);
+
+// Bookings
+router.get("/getAllBookings", adminProtect, getAllBookings);
+router.get("/getABooking/:id", adminProtect, getABooking);
+router.post("/addBooking", adminProtect, addBooking);
+router.put("/updateBooking/:id", adminProtect, updateBooking);
+router.delete("/deleteBooking/:id", adminProtect, deleteBooking);
 module.exports = router;
