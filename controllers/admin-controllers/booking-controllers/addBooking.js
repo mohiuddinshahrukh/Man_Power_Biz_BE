@@ -89,6 +89,10 @@ const addBooking = asyncHandler(async (req, res) => {
             bookingPrice,
             bookingPaymentStatus,
             bookingPaidAmount,
+            bookingRemainingAmount:
+              typeof (bookingPrice - bookingPaidAmount) != "NaN"
+                ? bookingPrice - bookingPaidAmount
+                : 0,
           });
           if (!newBooking) {
             res.json({

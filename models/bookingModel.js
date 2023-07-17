@@ -62,6 +62,10 @@ const bookingSchema = mongoose.Schema(
       type: Number,
       required: [true, "Please provide the paid amount"],
     },
+    bookingRemainingAmount: {
+      type: Number,
+      required: [true, "Please provide the remaining amount"],
+    },
   },
   {
     timestamps: true,
