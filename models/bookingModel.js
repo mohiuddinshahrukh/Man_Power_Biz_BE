@@ -3,6 +3,11 @@ const Schema = mongoose.Schema;
 
 const bookingSchema = mongoose.Schema(
   {
+    bookingId: {
+      type: String,
+      required: [true, "Please provide booking ID"],
+      unique: true,
+    },
     bookingCity: {
       required: [true, "Please provide a booking city"],
       type: String,

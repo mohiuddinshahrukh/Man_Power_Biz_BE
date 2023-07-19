@@ -3,6 +3,7 @@ const Booking = require("../../../models/bookingModel");
 const Service = require("../../../models/serviceModel");
 const Package = require("../../../models/packageModel");
 const User = require("../../../models/userModel");
+const uuid = require("uuid");
 const mongoose = require("mongoose");
 
 const addBooking = asyncHandler(async (req, res) => {
@@ -75,7 +76,18 @@ const addBooking = asyncHandler(async (req, res) => {
             msg: `The provided service id doesn't exist`,
           });
         } else {
+          let bookingId =
+            bookingCity +
+            "_" +
+            bookingZip +
+            "_" +
+            fetchCustomer.fullName[0] +
+            "_" +
+            new Date().toISOString().toLocaleString().split("T")[0] +
+            "_" +
+            uuid.v4().split("-")[0];
           let newBooking = await Booking.create({
+            bookingId: bookingId,
             bookingCity,
             bookingZip,
             bookingDate,

@@ -16,7 +16,7 @@ const getAllBookings = asyncHandler(async (req, res) => {
       })
       .populate({
         path: "bookingService",
-        select: "serviceTitle",
+        select: "serviceTitle serviceContactPhone serviceInfoEmail serviceWhatsAppPhone",
         options: { lean: true },
       });
     const bookingsData = allBookings.map((booking) => {
