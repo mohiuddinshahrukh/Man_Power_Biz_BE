@@ -6,7 +6,7 @@ const getAllBookings = asyncHandler(async (req, res) => {
     const allBookings = await Booking.find()
       .populate({
         path: "bookingCustomer",
-        select: "fullName",
+        select: "fullName email",
         options: { lean: true },
       })
       .populate({
@@ -16,7 +16,8 @@ const getAllBookings = asyncHandler(async (req, res) => {
       })
       .populate({
         path: "bookingService",
-        select: "serviceTitle serviceContactPhone serviceInfoEmail serviceWhatsAppPhone",
+        select:
+          "serviceTitle serviceContactPhone serviceInfoEmail serviceWhatsAppPhone",
         options: { lean: true },
       });
     const bookingsData = allBookings.map((booking) => {
