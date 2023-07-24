@@ -33,6 +33,7 @@ const updateBooking = require("../../controllers/admin-controllers/booking-contr
 const getABooking = require("../../controllers/admin-controllers/booking-controllers/getAbooking");
 const deleteBooking = require("../../controllers/admin-controllers/booking-controllers/deleteBooking");
 const createPaymentIntent = require("../../controllers/admin-controllers/payment-controllers/createPaymentIntent");
+const makePayment = require("../../controllers/admin-controllers/payment-controllers/makePayment");
 const router = express.Router();
 
 // User routes
@@ -75,6 +76,6 @@ router.delete("/deleteBooking/:id", adminProtect, deleteBooking);
 
 // Payment
 router.post("/createPaymentIntent", adminProtect, createPaymentIntent);
-router.post("/makePayment", adminProtect, () => {});
+router.post("/makePayment", adminProtect, makePayment);
 
 module.exports = router;

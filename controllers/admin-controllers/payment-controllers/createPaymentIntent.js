@@ -15,7 +15,7 @@ const createPaymentIntent = asyncHandler(async (req, res) => {
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         receipt_email: email,
-        currency: currency ? currency : "usd",
+        currency: currency ? currency : "INR",
         automatic_payment_methods: {
           enabled: true,
         },
