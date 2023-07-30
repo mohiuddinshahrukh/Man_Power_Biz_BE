@@ -10,7 +10,6 @@ const packageSchema = mongoose.Schema(
     packageTitle: {
       type: String,
       required: [true, "Please provide a package title"],
-      unique: true,
     },
     packageDescription: {
       type: String,

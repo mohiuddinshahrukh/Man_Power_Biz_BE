@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Service = require("../../models/serviceModel");
+const Category = require("../../models/serviceCategoryModel");
 const __isEmpty = require("lodash.isempty");
 const __isEqual = require("lodash.isequal");
 const getAllServices = asyncHandler(async (req, res) => {
@@ -70,9 +71,7 @@ const addService = asyncHandler(async (req, res) => {
       serviceImages,
       serviceVideos,
       servicePDF,
-      serviceCoverImage,
       serviceAddress,
-      
     } = req.body;
 
     if (
@@ -103,18 +102,40 @@ const addService = asyncHandler(async (req, res) => {
         serviceAddress: serviceAddress,
         serviceZipCode: serviceZipCode,
         serviceCity: serviceCity,
-        serviceCoverImage: serviceCoverImage,
+        serviceCoverImage: serviceImages.length > 0 ? serviceImages[0] : '',
         serviceImages: serviceImages ? serviceImages : [],
         serviceVideos: serviceVideos ? serviceVideos : [],
         servicePDF: servicePDF ? servicePDF : [],
       });
       if (service) {
-        res.status(201).json({
-          status: 201,
-          data: service,
-          error: false,
-          msg: "Service Created Successfully",
-        });
+        const category = await Category.findById(serviceCategory);
+        if (!category) {
+          res.json({
+            status: 400,
+            error: true,
+            msg: "The provided service category doesn't exist",
+          });
+        } else {
+          const updatedCategory = await Category.findByIdAndUpdate(
+            serviceCategory,
+            { $push: { categoryServices: service._id } },
+            { new: true }
+          );
+          if (!updatedCategory) {
+            res.json({
+              status: 400,
+              error: true,
+              msg: "Categories couldn't be updated",
+            });
+          } else {
+            res.status(201).json({
+              status: 201,
+              data: service,
+              error: false,
+              msg: "Service Created Successfully",
+            });
+          }
+        }
       } else {
         res.json({
           status: 400,
@@ -125,9 +146,9 @@ const addService = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     res.json({
-      status: 400,
+      status: 500,
       error: true,
-      msg: `The following error occurred: ${error}`,
+      msg: `${error}`,
     });
   }
 });
@@ -187,9 +208,9 @@ const updateService = asyncHandler(async (req, res) => {
   } catch (err) {
     console.log(err);
     res.json({
-      status: 400,
+      status: 500,
       error: true,
-      msg: `The following error occurred: ${err}`,
+      msg: `${err}`,
     });
   }
 });

@@ -25,6 +25,10 @@ const serviceCategoryModel = mongoose.Schema(
       required: false,
       default: true,
     },
+    categoryServices: {
+      type: [Schema.Types.ObjectId],
+      ref: "Service",
+    },
   },
   {
     timestamps: true,

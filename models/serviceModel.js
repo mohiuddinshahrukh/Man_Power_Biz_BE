@@ -33,7 +33,7 @@ const serviceSchema = mongoose.Schema(
     servicePackages: [
       {
         type: Schema.Types.ObjectId,
-        ref: "ServicePackage",
+        ref: "Package",
       },
     ],
     serviceStatus: {
@@ -45,7 +45,6 @@ const serviceSchema = mongoose.Schema(
     servicePDF: [{ type: String }],
     serviceCoverImage: {
       type: String,
-      required: [false, "Please provide a cover image"],
     },
     serviceAddress: {
       type: String,
