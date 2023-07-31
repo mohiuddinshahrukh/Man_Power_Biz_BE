@@ -1,9 +1,9 @@
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const asyncHandler = require("express-async-handler");
-const User = require("../models/userModel");
 const dotenv = require("dotenv");
 dotenv.config();
+const asyncHandler = require("express-async-handler");
+const User = require("../models/userModel");
+const { genToken } = require("../helpers/genToken");
 const addUser = asyncHandler(async (req, res) => {
   try {
     const {
@@ -38,7 +38,6 @@ const addUser = asyncHandler(async (req, res) => {
           msg: `User with email: ${email} already exits`,
         });
       } else {
-        console.log("Hashing password");
         //   Hashing password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -120,17 +119,5 @@ const getUserData = asyncHandler(async (req, res) => {
     msg: "User fetched Successfully",
   });
 });
-
-const genToken = (id, userType) => {
-  if (userType === "admin") {
-    return jwt.sign({ id }, process.env.JWT_SECRET_ADMIN, {
-      expiresIn: "30d",
-    });
-  } else {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-      expiresIn: "30d",
-    });
-  }
-};
 
 module.exports = { addUser, loginUser, getUserData };
