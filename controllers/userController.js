@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const { genToken } = require("../helpers/genToken");
+const genToken = require("../helpers/genToken");
 const addUser = asyncHandler(async (req, res) => {
   try {
     const {
