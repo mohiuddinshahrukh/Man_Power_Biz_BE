@@ -38,6 +38,7 @@ const loginCustomer = asyncHandler(async (req, res) => {
         res.json({
           status: 200,
           data: {
+            _id: existingUser._id,
             fullName: existingUser.fullName,
             email: existingUser.email,
             userType: existingUser.userType,
