@@ -4,7 +4,7 @@ const Booking = require("../../../models/bookingModel");
 
 const makePayment = asyncHandler(async (req, res) => {
   try {
-    const { bookingId, amount } = req.body;
+    const { bookingId, amount, } = req.body;
     if (!bookingId) {
       res.json({
         status: 400,

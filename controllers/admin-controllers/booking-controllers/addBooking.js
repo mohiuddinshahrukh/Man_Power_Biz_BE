@@ -22,124 +22,99 @@ const addBooking = asyncHandler(async (req, res) => {
       bookingPrice,
       bookingPaymentStatus,
       bookingPaidAmount,
+      bookingId,
     } = req.body;
 
+    // Input validation
     if (
       !bookingCity ||
-      !bookingZip ||
-      !bookingDate ||
       !bookingService ||
       !bookingPackage ||
-      !bookingCustomer ||
-      !bookingContactNumber ||
-      !bookingEmailAddress ||
-      !bookingDescription ||
-      !bookingPrice ||
-      !bookingPaidAmount
+      !bookingCustomer
     ) {
-      res.json({
-        status: 400,
+      return res.status(400).json({
         error: true,
-        msg: `A required parameter is missing`,
+        msg: "Required parameters are missing",
       });
-    } else {
-      if (
-        !mongoose.Types.ObjectId.isValid(bookingService) ||
-        !mongoose.Types.ObjectId.isValid(bookingPackage) ||
-        !mongoose.Types.ObjectId.isValid(bookingCustomer)
-      ) {
-        res.json({
-          status: 400,
-          error: true,
-          msg: `The provided object id's are not of the type mongoose object id`,
-        });
-      } else {
-        let fetchService = await Service.findById(bookingService);
-        let fetchPackage = await Package.findById(bookingPackage);
-        let fetchCustomer = await User.findById(bookingCustomer);
-        if (!fetchCustomer) {
-          res.json({
-            status: 400,
-            error: true,
-            msg: `The provided customer id doesn't exist`,
-          });
-        } else if (!fetchPackage) {
-          res.json({
-            status: 400,
-            error: true,
-            msg: `The provided package id doesn't exist`,
-          });
-        } else if (!fetchService) {
-          res.json({
-            status: 400,
-            error: true,
-            msg: `The provided service id doesn't exist`,
-          });
-        } else {
-          let bookingId =
-            bookingCity +
-            "_" +
-            bookingZip +
-            "_" +
-            fetchCustomer.fullName[0] +
-            "_" +
-            new Date().toISOString().toLocaleString().split("T")[0] +
-            "_" +
-            uuid.v4().split("-")[0];
-          let newBooking = await Booking.create({
-            bookingId: bookingId,
-            bookingCity,
-            bookingZip,
-            bookingDate,
-            bookingService,
-            bookingPackage,
-            bookingCustomer,
-            bookingContactNumber,
-            bookingEmailAddress,
-            bookingDescription,
-            bookingStatus,
-            bookingPrice,
-            bookingPaymentStatus,
-            bookingPaidAmount,
-            bookingRemainingAmount:
-              typeof (bookingPrice - bookingPaidAmount) != "NaN"
-                ? bookingPrice - bookingPaidAmount
-                : 0,
-          });
-          if (!newBooking) {
-            res.json({
-              status: 400,
-              error: true,
-              msg: `The booking couldn't be created`,
-            });
-          } else {
-            fetchPackage.packageBookings.push(newBooking._id);
-            let updatedPkg = await fetchPackage.save();
-            if (!updatedPkg) {
-              res.json({
-                status: 400,
-                error: true,
-                msg: `Booking couldn't be added to packages`,
-              });
-            } else {
-              res.json({
-                status: 200,
-                error: false,
-                data: newBooking,
-                msg: `Booking created successfully`,
-              });
-            }
-          }
-        }
-      }
     }
+
+    // Fetch services and packages
+    const fetchedServices = await Promise.all(
+      bookingService.map(async (element) => {
+        if (!mongoose.Types.ObjectId.isValid(element._id)) {
+          throw new Error("Invalid service ID");
+        }
+        return Service.findById(element._id);
+      })
+    );
+
+    const fetchedPackages = await Promise.all(
+      bookingPackage.map(async (element) => {
+        if (!mongoose.Types.ObjectId.isValid(element._id)) {
+          throw new Error("Invalid package ID");
+        }
+        return Package.findById(element._id);
+      })
+    );
+
+    // Validate customer
+    if (!mongoose.Types.ObjectId.isValid(bookingCustomer._id)) {
+      return res.status(400).json({
+        error: true,
+        msg: "Invalid customer ID",
+      });
+    }
+    const fetchCustomer = await User.findById(bookingCustomer._id);
+    if (!fetchCustomer) {
+      return res.status(400).json({
+        error: true,
+        msg: "Customer not found",
+      });
+    }
+
+    // Create booking
+    const newBooking = await Booking.create({
+      bookingId:
+        bookingId ||
+        `${bookingCity}_${bookingZip}_${fetchCustomer.fullName[0]}_${
+          new Date().toISOString().split("T")[0]
+        }_${uuid.v4().split("-")[0]}`,
+      bookingCity,
+      bookingZip,
+      bookingDate,
+      bookingService: fetchedServices.map((service) => service._id),
+      bookingPackage: fetchedPackages.map((pkg) => pkg._id),
+      bookingCustomer: fetchCustomer._id,
+      bookingContactNumber,
+      bookingEmailAddress,
+      bookingDescription,
+      bookingStatus,
+      bookingPrice,
+      bookingPaymentStatus: bookingPaymentStatus.toUpperCase(),
+      bookingPaidAmount,
+      bookingRemainingAmount: Math.max(bookingPrice - bookingPaidAmount, 0),
+    });
+
+    // Update package bookings
+    await Promise.all(
+      fetchedPackages.map(async (fetchedPackage) => {
+        fetchedPackage.packageBookings.push(newBooking._id);
+        await fetchedPackage.save();
+      })
+    );
+
+    return res.status(200).json({
+      error: false,
+      data: newBooking,
+      msg: "Booking created successfully",
+    });
   } catch (error) {
-    console.log(error);
-    res.json({
-      status: 500,
+    console.error(error);
+    return res.status(500).json({
       error: true,
-      msg: `${error}`,
+      msg: "An error occurred while processing your request",
     });
   }
 });
+
 module.exports = addBooking;

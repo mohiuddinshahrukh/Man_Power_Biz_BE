@@ -22,12 +22,12 @@ const bookingSchema = mongoose.Schema(
     },
     bookingService: {
       required: [true, "Please provide a service for the booking"],
-      type: Schema.Types.ObjectId,
+      type: [Schema.Types.ObjectId],
       ref: "Service",
     },
     bookingPackage: {
       required: [true, "Please provide a package for the booking"],
-      type: Schema.Types.ObjectId,
+      type: [Schema.Types.ObjectId],
       ref: "Package",
     },
     bookingCustomer: {
@@ -53,19 +53,19 @@ const bookingSchema = mongoose.Schema(
       default: "IN PROGRESS",
       uppercase: true,
     },
+
+    bookingPaymentStatus: {
+      type: String,
+      required: [true, "Please provide the payment booking status"],
+      enum: ["COD", "ADVANCE", "FULL", "REFUNDED"],
+      default: "COD",
+    },
     bookingPrice: {
       required: [true, "Please provide booking price"],
       type: Number,
     },
-    bookingPaymentStatus: {
-      type: String,
-      required: [true, "Please provide the payment booking status"],
-      enum: ["ADVANCE", "FULL", "REFUNDED"],
-      default: "ADVANCE",
-    },
     bookingPaidAmount: {
       type: Number,
-      required: [true, "Please provide the paid amount"],
     },
     bookingRemainingAmount: {
       type: Number,
