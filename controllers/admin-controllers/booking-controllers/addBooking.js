@@ -53,7 +53,11 @@ const addBooking = asyncHandler(async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(element._id)) {
           throw new Error("Invalid package ID");
         }
-        return Package.findById(element._id);
+        const packageDoc = await Package.findById(element._id);
+        return {
+          package: packageDoc,
+          quantity: element.quantity || 1, // Default to 1 if quantity is not provided
+        };
       })
     );
 
@@ -83,7 +87,10 @@ const addBooking = asyncHandler(async (req, res) => {
       bookingZip,
       bookingDate,
       bookingService: fetchedServices.map((service) => service._id),
-      bookingPackage: fetchedPackages.map((pkg) => pkg._id),
+      bookingPackage: fetchedPackages.map((pkg) => ({
+        package: pkg.package._id,
+        quantity: pkg.quantity,
+      })),
       bookingCustomer: fetchCustomer._id,
       bookingContactNumber,
       bookingEmailAddress,
@@ -98,8 +105,8 @@ const addBooking = asyncHandler(async (req, res) => {
     // Update package bookings
     await Promise.all(
       fetchedPackages.map(async (fetchedPackage) => {
-        fetchedPackage.packageBookings.push(newBooking._id);
-        await fetchedPackage.save();
+        fetchedPackage.package.packageBookings.push(newBooking._id);
+        await fetchedPackage.package.save();
       })
     );
 

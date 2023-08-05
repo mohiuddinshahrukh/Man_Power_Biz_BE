@@ -25,11 +25,19 @@ const bookingSchema = mongoose.Schema(
       type: [Schema.Types.ObjectId],
       ref: "Service",
     },
-    bookingPackage: {
-      required: [true, "Please provide a package for the booking"],
-      type: [Schema.Types.ObjectId],
-      ref: "Package",
-    },
+    bookingPackage: [
+      {
+        package: {
+          type: Schema.Types.ObjectId,
+          ref: "Package",
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
     bookingCustomer: {
       required: [true, "Please provide a customer for the booking"],
       type: Schema.Types.ObjectId,

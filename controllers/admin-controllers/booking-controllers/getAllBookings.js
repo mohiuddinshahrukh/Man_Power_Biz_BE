@@ -31,8 +31,6 @@ const getAllBookings = asyncHandler(async (req, res) => {
         ...packageData,
         ...serviceData,
       };
-      // ...booking.bookingPackage,
-      // ...booking.bookingService,
     });
     if (!allBookings) {
       res.json({
