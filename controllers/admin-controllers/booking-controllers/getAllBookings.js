@@ -21,6 +21,7 @@ const getAllBookings = asyncHandler(async (req, res) => {
         options: { lean: true },
       });
     const bookingsData = allBookings.map((booking) => {
+      console.log("This is the booking: ", booking);
       const { ...bookingData } = booking.toObject();
       const { _id: customerId, ...customerData } = bookingData.bookingCustomer;
       const { _id: packageId, ...packageData } = bookingData.bookingPackage;

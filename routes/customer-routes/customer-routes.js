@@ -7,6 +7,7 @@ const createPaymentIntent = require("../../controllers/admin-controllers/payment
 const addBooking = require("../../controllers/admin-controllers/booking-controllers/addBooking");
 const getMyBookings = require("../../controllers/customer-controllers/get-my-bookings");
 const getMe = require("../../controllers/customer-controllers/get-me");
+const editProfile = require("../../controllers/customer-controllers/edit-profile");
 const router = express.Router();
 
 // Customer Routes
@@ -14,7 +15,7 @@ router.get("/get-landing-page-services", getServiceCategories);
 router.get("/get-specific-service-category/:id", getSpecificServiceCategory);
 router.get("/get-my-bookings/:id", getMyBookings);
 router.get("/get-me/:id", getMe);
-router.put("/edit-profile/:id", getMe);
+router.put("/edit-profile/:id", editProfile);
 router.put("/edit-password/:id", getMe);
 router.post("/login-customer", loginCustomer);
 router.post("/signup-customer", signUpCustomer);

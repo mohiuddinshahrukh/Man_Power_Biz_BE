@@ -18,9 +18,59 @@ const editProfile = asyncHandler(async (req, res) => {
           error: true,
           msg: `The provided id is not of the type mongoose object id`,
         });
+      } else {
+        const existingUser = await User.findById(id);
+        if (!existingUser) {
+          res.json({
+            status: 400,
+            error: true,
+            msg: `The user couldn't be found for the given id`,
+          });
+        } else {
+          const { contactNumber, whatsappNumber } = req.body;
+          if (!contactNumber || !whatsappNumber) {
+            res.json({
+              status: 400,
+              error: true,
+              msg: `Contact Number & WhatsApp are required parameters`,
+            });
+          } else {
+            const updatedUser = await User.findByIdAndUpdate(
+              id,
+              {
+                contactNumber,
+                whatsappNumber,
+              },
+              {
+                new: true,
+              }
+            );
+            if (!updatedUser) {
+              res.json({
+                status: 400,
+                error: true,
+                msg: `Contact Number & WhatsApp couldn't be updated`,
+              });
+            } else {
+              res.json({
+                status: 200,
+                error: false,
+                data: updatedUser,
+                msg: `Details updated successfully`,
+              });
+            }
+          }
+        }
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    res.json({
+      status: 500,
+      error: true,
+      msg: `${error}`,
+    });
+  }
 });
 
 module.exports = editProfile;
