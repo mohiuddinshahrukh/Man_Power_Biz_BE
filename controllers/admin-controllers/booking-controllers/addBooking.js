@@ -12,7 +12,6 @@ const addBooking = asyncHandler(async (req, res) => {
       bookingCity,
       bookingZip,
       bookingDate,
-      bookingService,
       bookingPackage,
       bookingCustomer,
       bookingContactNumber,
@@ -26,40 +25,25 @@ const addBooking = asyncHandler(async (req, res) => {
     } = req.body;
 
     // Input validation
-    if (
-      !bookingCity ||
-      !bookingService ||
-      !bookingPackage ||
-      !bookingCustomer
-    ) {
-      return res.status(400).json({
-        error: true,
-        msg: "Required parameters are missing",
-      });
-    }
-
-    // Fetch services and packages
-    const fetchedServices = await Promise.all(
-      bookingService.map(async (element) => {
-        if (!mongoose.Types.ObjectId.isValid(element._id)) {
-          throw new Error("Invalid service ID");
-        }
-        return Service.findById(element._id);
-      })
-    );
-
-    const fetchedPackages = await Promise.all(
-      bookingPackage.map(async (element) => {
-        if (!mongoose.Types.ObjectId.isValid(element._id)) {
-          throw new Error("Invalid package ID");
-        }
-        const packageDoc = await Package.findById(element._id);
-        return {
-          package: packageDoc,
-          quantity: element.quantity || 1, // Default to 1 if quantity is not provided
-        };
-      })
-    );
+    // if (
+    //   !bookingCity ||
+    //   !bookingZip ||
+    //   !bookingDate ||
+    //   !bookingPackage ||
+    //   !bookingCustomer ||
+    //   !bookingContactNumber ||
+    //   !bookingEmailAddress ||
+    //   !bookingDescription ||
+    //   !bookingStatus ||
+    //   !bookingPrice ||
+    //   !bookingPaymentStatus ||
+    //   !bookingPaidAmount
+    // ) {
+    //   return res.status(400).json({
+    //     error: true,
+    //     msg: "Required parameters are missing",
+    //   });
+    // }
 
     // Validate customer
     if (!mongoose.Types.ObjectId.isValid(bookingCustomer._id)) {
@@ -76,6 +60,12 @@ const addBooking = asyncHandler(async (req, res) => {
       });
     }
 
+    // Create booking package array
+    const packageArray = bookingPackage.map((pkg) => ({
+      package: pkg.package._id,
+      quantity: pkg.quantity,
+    }));
+
     // Create booking
     const newBooking = await Booking.create({
       bookingId:
@@ -86,11 +76,7 @@ const addBooking = asyncHandler(async (req, res) => {
       bookingCity,
       bookingZip,
       bookingDate,
-      bookingService: fetchedServices.map((service) => service._id),
-      bookingPackage: fetchedPackages.map((pkg) => ({
-        package: pkg.package._id,
-        quantity: pkg.quantity,
-      })),
+      bookingPackage: packageArray,
       bookingCustomer: fetchCustomer._id,
       bookingContactNumber,
       bookingEmailAddress,
@@ -104,9 +90,12 @@ const addBooking = asyncHandler(async (req, res) => {
 
     // Update package bookings
     await Promise.all(
-      fetchedPackages.map(async (fetchedPackage) => {
-        fetchedPackage.package.packageBookings.push(newBooking._id);
-        await fetchedPackage.package.save();
+      packageArray.map(async (pkg) => {
+        const fetchedPackage = await Package.findById(pkg.package);
+        if (fetchedPackage) {
+          fetchedPackage.packageBookings.push(newBooking._id);
+          await fetchedPackage.save();
+        }
       })
     );
 
