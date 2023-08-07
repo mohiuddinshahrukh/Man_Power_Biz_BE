@@ -9,11 +9,13 @@ const getMyBookings = require("../../controllers/customer-controllers/get-my-boo
 const getMe = require("../../controllers/customer-controllers/get-me");
 const editProfile = require("../../controllers/customer-controllers/edit-profile");
 const editPassword = require("../../controllers/customer-controllers/edit-password");
+const getAllServiceCategories = require("../../controllers/customer-controllers/get-all-service-categories");
 const router = express.Router();
 
 // Customer Routes
 router.get("/get-landing-page-services", getServiceCategories);
 router.get("/get-specific-service-category/:id", getSpecificServiceCategory);
+router.get("/get-all-service-categories", getAllServiceCategories);
 router.get("/get-my-bookings/:id", getMyBookings);
 router.get("/get-me/:id", getMe);
 router.put("/edit-profile/:id", editProfile);
