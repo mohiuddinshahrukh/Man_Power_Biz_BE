@@ -83,7 +83,10 @@ const addBooking = asyncHandler(async (req, res) => {
       bookingDescription,
       bookingStatus,
       bookingPrice,
-      bookingPaymentStatus: bookingPaymentStatus.toUpperCase(),
+      bookingPaymentStatus:
+        bookingPaymentStatus.toUpperCase() == "CARD"
+          ? "FULL"
+          : bookingPaymentStatus.toUpperCase(),
       bookingPaidAmount,
       bookingRemainingAmount: Math.max(bookingPrice - bookingPaidAmount, 0),
     });

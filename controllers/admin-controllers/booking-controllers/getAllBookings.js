@@ -1,7 +1,7 @@
-const asyncHandler = require("express-async-handler");
+const expressAsyncHandler = require("express-async-handler");
 const Booking = require("../../../models/bookingModel");
 
-const getAllBookings = asyncHandler(async (req, res) => {
+const getAllBookings = expressAsyncHandler(async (req, res) => {
   try {
     const allBookings = await Booking.find()
       .populate({
@@ -20,12 +20,30 @@ const getAllBookings = asyncHandler(async (req, res) => {
           "serviceTitle serviceContactPhone serviceInfoEmail serviceWhatsAppPhone",
         options: { lean: true },
       });
+
+    if (!allBookings) {
+      return res.json({
+        status: 400,
+        error: true,
+        msg: `Error in getting bookings`,
+      });
+    }
+
     const bookingsData = allBookings.map((booking) => {
-      console.log("This is the booking: ", booking);
       const { ...bookingData } = booking.toObject();
-      const { _id: customerId, ...customerData } = bookingData.bookingCustomer;
-      const { _id: packageId, ...packageData } = bookingData.bookingPackage;
-      const { _id: serviceId, ...serviceData } = bookingData.bookingService;
+      const customerData = bookingData.bookingCustomer
+        ? {
+            _id: bookingData.bookingCustomer._id,
+            ...bookingData.bookingCustomer,
+          }
+        : {};
+      const packageData = bookingData.bookingPackage
+        ? { _id: bookingData.bookingPackage._id, ...bookingData.bookingPackage }
+        : {};
+      const serviceData = bookingData.bookingService
+        ? { _id: bookingData.bookingService._id, ...bookingData.bookingService }
+        : {};
+
       return {
         ...bookingData,
         ...customerData,
@@ -33,20 +51,13 @@ const getAllBookings = asyncHandler(async (req, res) => {
         ...serviceData,
       };
     });
-    if (!allBookings) {
-      res.json({
-        status: 400,
-        error: true,
-        msg: `Error in getting bookings`,
-      });
-    } else {
-      res.json({
-        status: 200,
-        error: false,
-        data: bookingsData,
-        msg: `Successfully fetched all bookings`,
-      });
-    }
+
+    res.json({
+      status: 200,
+      error: false,
+      data: bookingsData,
+      msg: `Successfully fetched all bookings`,
+    });
   } catch (error) {
     console.log(error);
     res.json({

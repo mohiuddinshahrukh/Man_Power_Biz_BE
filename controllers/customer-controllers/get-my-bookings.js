@@ -38,19 +38,26 @@ const getMyBookings = asyncHandler(async (req, res) => {
             path: "bookingService",
             options: { lean: true },
           });
+
         const leanBookings = fetchedBookings.map((booking) => {
           const { ...bookingData } = booking.toObject();
-          const { _id: customerId, ...customerData } =
-            bookingData.bookingCustomer;
+          const customerData = bookingData.bookingCustomer
+            ? {
+                _id: bookingData.bookingCustomer._id,
+                ...bookingData.bookingCustomer,
+              }
+            : {};
           const packageQuantities = bookingData.bookingPackage.map(
             (pkg) => pkg.quantity
           );
+
           return {
             ...bookingData,
             ...customerData,
             packageQuantities,
           };
         });
+
         if (!leanBookings) {
           res.json({
             status: 400,
@@ -60,7 +67,8 @@ const getMyBookings = asyncHandler(async (req, res) => {
         } else {
           console.log("These are lean bookings", leanBookings);
           const filteredBookings = leanBookings.filter(
-            (booking) => booking.bookingCustomer._id == _id
+            (booking) =>
+              booking.bookingCustomer && booking.bookingCustomer._id == _id
           );
 
           res.json({
