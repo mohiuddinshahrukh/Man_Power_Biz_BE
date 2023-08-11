@@ -6,19 +6,15 @@ const getAllBookings = expressAsyncHandler(async (req, res) => {
     const allBookings = await Booking.find()
       .populate({
         path: "bookingCustomer",
-        select: "fullName email",
-        options: { lean: true },
       })
       .populate({
         path: "bookingPackage",
         select: "packageTitle",
-        options: { lean: true },
       })
       .populate({
         path: "bookingService",
         select:
           "serviceTitle serviceContactPhone serviceInfoEmail serviceWhatsAppPhone",
-        options: { lean: true },
       });
 
     if (!allBookings) {
@@ -29,33 +25,10 @@ const getAllBookings = expressAsyncHandler(async (req, res) => {
       });
     }
 
-    const bookingsData = allBookings.map((booking) => {
-      const { ...bookingData } = booking.toObject();
-      const customerData = bookingData.bookingCustomer
-        ? {
-            _id: bookingData.bookingCustomer._id,
-            ...bookingData.bookingCustomer,
-          }
-        : {};
-      const packageData = bookingData.bookingPackage
-        ? { _id: bookingData.bookingPackage._id, ...bookingData.bookingPackage }
-        : {};
-      const serviceData = bookingData.bookingService
-        ? { _id: bookingData.bookingService._id, ...bookingData.bookingService }
-        : {};
-
-      return {
-        ...bookingData,
-        ...customerData,
-        ...packageData,
-        ...serviceData,
-      };
-    });
-
     res.json({
       status: 200,
       error: false,
-      data: bookingsData,
+      data: allBookings,
       msg: `Successfully fetched all bookings`,
     });
   } catch (error) {

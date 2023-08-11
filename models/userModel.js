@@ -39,6 +39,10 @@ const userSchema = mongoose.Schema(
       required: false,
       default: "",
     },
+    bookings: {
+      type: [mongoose.Types.ObjectId],
+      ref: "Booking",
+    },
   },
   {
     timestamps: true,

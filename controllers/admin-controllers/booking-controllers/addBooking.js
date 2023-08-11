@@ -24,27 +24,6 @@ const addBooking = asyncHandler(async (req, res) => {
       bookingId,
     } = req.body;
 
-    // Input validation
-    // if (
-    //   !bookingCity ||
-    //   !bookingZip ||
-    //   !bookingDate ||
-    //   !bookingPackage ||
-    //   !bookingCustomer ||
-    //   !bookingContactNumber ||
-    //   !bookingEmailAddress ||
-    //   !bookingDescription ||
-    //   !bookingStatus ||
-    //   !bookingPrice ||
-    //   !bookingPaymentStatus ||
-    //   !bookingPaidAmount
-    // ) {
-    //   return res.status(400).json({
-    //     error: true,
-    //     msg: "Required parameters are missing",
-    //   });
-    // }
-
     // Validate customer
     if (!mongoose.Types.ObjectId.isValid(bookingCustomer._id)) {
       return res.status(400).json({
@@ -91,6 +70,10 @@ const addBooking = asyncHandler(async (req, res) => {
         bookingPaymentStatus.toUpperCase() == "CARD" ? bookingPrice : 0,
       bookingRemainingAmount: Math.max(bookingPrice - bookingPaidAmount, 0),
     });
+
+    // Add booking to customer's bookings array
+    fetchCustomer.bookings.push(newBooking._id);
+    await fetchCustomer.save();
 
     // Update package bookings
     await Promise.all(
