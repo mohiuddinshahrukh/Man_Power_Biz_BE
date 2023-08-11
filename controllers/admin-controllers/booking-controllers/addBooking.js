@@ -71,26 +71,33 @@ const addBooking = asyncHandler(async (req, res) => {
       bookingRemainingAmount: Math.max(bookingPrice - bookingPaidAmount, 0),
     });
 
-    // Add booking to customer's bookings array
-    fetchCustomer.bookings.push(newBooking._id);
-    await fetchCustomer.save();
-
-    // Update package bookings
-    await Promise.all(
-      packageArray.map(async (pkg) => {
-        const fetchedPackage = await Package.findById(pkg.package);
-        if (fetchedPackage) {
-          fetchedPackage.packageBookings.push(newBooking._id);
-          await fetchedPackage.save();
-        }
-      })
-    );
-
-    return res.status(200).json({
-      error: false,
-      data: newBooking,
-      msg: "Booking created successfully",
+    const updateUser = await User.findByIdAndUpdate(bookingCustomer, {
+      $push: { bookings: newBooking._id },
     });
+    if (!updateUser) {
+      res.json({
+        error: true,
+        status: 400,
+        msg: "User couldn't be updated.",
+      });
+    } else {
+      // Update package bookings
+      await Promise.all(
+        packageArray.map(async (pkg) => {
+          const fetchedPackage = await Package.findById(pkg.package);
+          if (fetchedPackage) {
+            fetchedPackage.packageBookings.push(newBooking._id);
+            await fetchedPackage.save();
+          }
+        })
+      );
+
+      return res.status(200).json({
+        error: false,
+        data: newBooking,
+        msg: "Booking created successfully",
+      });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({

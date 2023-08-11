@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 const userSchema = mongoose.Schema(
   {
     fullName: {
@@ -40,7 +41,7 @@ const userSchema = mongoose.Schema(
       default: "",
     },
     bookings: {
-      type: [mongoose.Types.ObjectId],
+      type: [Schema.Types.ObjectId],
       ref: "Booking",
     },
   },
