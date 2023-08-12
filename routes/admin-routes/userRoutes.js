@@ -36,6 +36,7 @@ const createPaymentIntent = require("../../controllers/admin-controllers/payment
 const makePayment = require("../../controllers/admin-controllers/payment-controllers/makePayment");
 const getCustomerWithPayments = require("../../controllers/admin-controllers/payment-controllers/getCustomersWithPendingPayments");
 const getAllPayments = require("../../controllers/admin-controllers/payment-controllers/getAllPayments");
+const getAdminDashboard = require("../../controllers/admin-controllers/dashboardController");
 const router = express.Router();
 
 // User routes
@@ -85,5 +86,8 @@ router.get(
   getCustomerWithPayments
 );
 router.get("/get-all-payments", adminProtect, getAllPayments);
+
+// Dashboard Admin
+router.get("/get-admin-dashboard", adminProtect, getAdminDashboard);
 
 module.exports = router;
