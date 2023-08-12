@@ -4,6 +4,7 @@ const paymentSchema = mongoose.Schema(
   {
     customer: {
       type: Schema.Types.ObjectId,
+      ref: "User",
       required: [true, "Please provide the customer ID"],
     },
     bookingId: {

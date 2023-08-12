@@ -2,7 +2,11 @@ const Payment = require("../../../models/paymentModel");
 
 const getAllPayments = async (req, res) => {
   try {
-    const allPayments = await Payment.find();
+    const allPayments = await Payment.find().populate({
+      path: "customer",
+      select: "fullName email",
+    });
+
     if (!allPayments) {
       res.json({
         status: 400,
@@ -10,9 +14,20 @@ const getAllPayments = async (req, res) => {
         msg: `All payments couldn't be fetched`,
       });
     } else {
+      const flattenedPayments = allPayments.map((payment) => {
+        const flattenedPayment = {
+          ...payment._doc, // Extract top-level properties
+          fullName: payment.customer.fullName,
+          email: payment.customer.email,
+        };
+
+        delete flattenedPayment.customer; // Remove the nested customer object
+        return flattenedPayment;
+      });
+
       res.json({
         status: 200,
-        data: allPayments,
+        data: flattenedPayments,
         error: false,
         msg: `All payments fetched`,
       });
@@ -26,4 +41,5 @@ const getAllPayments = async (req, res) => {
     });
   }
 };
+
 module.exports = getAllPayments;
