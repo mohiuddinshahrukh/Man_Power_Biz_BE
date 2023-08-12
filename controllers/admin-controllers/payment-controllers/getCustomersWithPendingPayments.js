@@ -10,6 +10,10 @@ const getCustomerWithPayments = async (req, res) => {
         path: "bookingPackage.package",
         model: "Package", // Make sure to provide the correct model name
       },
+      populate: {
+        path: "bookingService",
+        model: "Service", // Make sure to provide the correct model name
+      },
     });
 
     if (!customers) {
