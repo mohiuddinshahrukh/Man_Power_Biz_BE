@@ -4,6 +4,7 @@ const Service = require("../../../models/serviceModel");
 const Package = require("../../../models/packageModel");
 const User = require("../../../models/userModel");
 const uuid = require("uuid");
+const moment = require("moment-timezone"); // Import the moment-timezone library
 const mongoose = require("mongoose");
 
 const addBooking = asyncHandler(async (req, res) => {
@@ -11,7 +12,7 @@ const addBooking = asyncHandler(async (req, res) => {
     const {
       bookingCity,
       bookingZip,
-      bookingDate,
+      bookingDate, // Assuming this is in the format "9/1/2023, 12:00:00 AM"
       bookingPackage,
       bookingCustomer,
       bookingContactNumber,
@@ -22,8 +23,15 @@ const addBooking = asyncHandler(async (req, res) => {
       bookingPaymentStatus,
       bookingPaidAmount,
       bookingId,
-      bookingServices, // Assuming this is an array of services
+      bookingServices,
+      // ... (other fields)
     } = req.body;
+
+    // Parse the booking date received from the frontend
+    const localDate = moment.tz(bookingDate, "M/D/YYYY, h:mm:ss A", "UTC");
+
+    // Convert the user local date to UTC
+    const utcDate = localDate.utc();
 
     if (
       !bookingCity ||
@@ -42,7 +50,7 @@ const addBooking = asyncHandler(async (req, res) => {
     ) {
       return res.status(400).json({
         error: true,
-        msg: "Missing required fields",
+        msg: "Missing required fields or invalid data",
       });
     }
 
@@ -66,17 +74,17 @@ const addBooking = asyncHandler(async (req, res) => {
       quantity: pkg.quantity,
     }));
 
-    const serviceArray = bookingServices; // Assuming bookingService is an array of service IDs
+    const serviceArray = bookingServices;
 
     const newBooking = await Booking.create({
       bookingId:
         bookingId ||
         `${bookingCity}_${bookingZip}_${fetchCustomer.fullName[0]}_${
-          new Date().toISOString().split("T")[0]
+          utcDate.toISOString().split("T")[0]
         }_${uuid.v4().split("-")[0]}`,
       bookingCity,
       bookingZip,
-      bookingDate,
+      bookingDate: utcDate.toDate(), // Use the converted UTC date
       bookingPackage: packageArray,
       bookingService: serviceArray,
       bookingCustomer: fetchCustomer._id,
@@ -114,16 +122,6 @@ const addBooking = asyncHandler(async (req, res) => {
         }
       })
     );
-
-    // await Promise.all(
-    //   serviceArray.map(async (serviceId) => {
-    //     const fetchedService = await Service.findById(serviceId);
-    //     if (fetchedService) {
-    //       fetchedService.serviceBookings.push(newBooking._id);
-    //       await fetchedService.save();
-    //     }
-    //   })
-    // );
 
     return res.status(200).json({
       error: false,
