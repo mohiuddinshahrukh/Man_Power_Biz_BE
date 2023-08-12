@@ -14,7 +14,6 @@ const serviceSchema = mongoose.Schema(
       required: [true, "Please provide a category id"],
     },
     serviceTitle: {
-      unique: true,
       type: String,
       required: [true, "Please provide a service title"],
     },

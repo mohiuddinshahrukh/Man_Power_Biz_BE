@@ -6,15 +6,12 @@ const getAllBookings = expressAsyncHandler(async (req, res) => {
     const allBookings = await Booking.find()
       .populate({
         path: "bookingCustomer",
-        select: "email",
       })
       .populate({
         path: "bookingPackage.package",
       })
       .populate({
         path: "bookingService",
-        select:
-          "serviceTitle serviceContactPhone serviceInfoEmail serviceWhatsAppPhone",
       });
 
     if (!allBookings) {
