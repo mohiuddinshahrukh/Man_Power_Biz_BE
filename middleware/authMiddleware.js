@@ -44,8 +44,6 @@ const adminProtect = asyncHandler(async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET_ADMIN);
-      console.log("This is the decoded token: ", decoded);
-      console.log("This is the decoded ID: ", decoded.id);
 
       let user = await User.findById(decoded.id);
       if (!user) {
@@ -55,7 +53,6 @@ const adminProtect = asyncHandler(async (req, res, next) => {
           msg: `A user with the id: ${req.params.id} couldn't be found!`,
         });
       } else {
-        console.log("USER: ", user);
         req.user = user;
         next();
       }
