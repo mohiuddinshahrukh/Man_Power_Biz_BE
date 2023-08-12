@@ -10,6 +10,7 @@ const getMe = require("../../controllers/customer-controllers/get-me");
 const editProfile = require("../../controllers/customer-controllers/edit-profile");
 const editPassword = require("../../controllers/customer-controllers/edit-password");
 const getAllServiceCategories = require("../../controllers/customer-controllers/get-all-service-categories");
+const getCustomerPayments = require("../../controllers/admin-controllers/payment-controllers/getCustomerPayments");
 const router = express.Router();
 
 // Customer Routes
@@ -18,6 +19,8 @@ router.get("/get-specific-service-category/:id", getSpecificServiceCategory);
 router.get("/get-all-service-categories", getAllServiceCategories);
 router.get("/get-my-bookings/:id", getMyBookings);
 router.get("/get-me/:id", getMe);
+// Payments
+router.get("/get-customer-payments/:id", getCustomerPayments);
 router.put("/edit-profile/:id", editProfile);
 router.put("/edit-password/:id", editPassword);
 router.post("/login-customer", loginCustomer);
