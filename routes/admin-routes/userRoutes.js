@@ -35,6 +35,7 @@ const deleteBooking = require("../../controllers/admin-controllers/booking-contr
 const createPaymentIntent = require("../../controllers/admin-controllers/payment-controllers/createPaymentIntent");
 const makePayment = require("../../controllers/admin-controllers/payment-controllers/makePayment");
 const getCustomerWithPayments = require("../../controllers/admin-controllers/payment-controllers/getCustomersWithPendingPayments");
+const getAllPayments = require("../../controllers/admin-controllers/payment-controllers/getAllPayments");
 const router = express.Router();
 
 // User routes
@@ -83,5 +84,6 @@ router.get(
   adminProtect,
   getCustomerWithPayments
 );
+router.get("/get-all-payments", adminProtect, getAllPayments);
 
 module.exports = router;

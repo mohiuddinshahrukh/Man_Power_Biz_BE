@@ -1,15 +1,21 @@
 const asyncHandler = require("express-async-handler");
 const mongoose = require("mongoose");
 const Booking = require("../../../models/bookingModel");
-
+const Payment = require(".././../../models/paymentModel");
 const makePayment = asyncHandler(async (req, res) => {
   try {
-    const { bookingId, amount, } = req.body;
+    const { bookingId, amount, customerId, paymentMethod } = req.body;
     if (!bookingId) {
       res.json({
         status: 400,
         error: true,
         msg: `Booking id is required to create a payment`,
+      });
+    } else if (!customerId) {
+      res.json({
+        status: 400,
+        error: true,
+        msg: `Customer id is required to create a payment`,
       });
     } else if (!amount) {
       res.json({
@@ -91,12 +97,27 @@ const makePayment = asyncHandler(async (req, res) => {
             msg: `Booking couldn't be updated, payment failed`,
           });
         } else {
-          res.json({
-            status: 200,
-            data: bookingsData[0],
-            error: false,
-            msg: `Payment successfully created and booking updated`,
+          const createPayment = await Payment.create({
+            customer: customerId,
+            bookingId: bookingId,
+            payment: paymentMethod,
+            paymentAmount: amount,
           });
+
+          if (!createPayment) {
+            res.json({
+              status: 400,
+              error: true,
+              msg: `Payment couldn't be created, payment failed`,
+            });
+          } else {
+            res.json({
+              status: 200,
+              data: bookingsData[0],
+              error: false,
+              msg: `Payment successfully created and booking updated`,
+            });
+          }
         }
       }
     }
