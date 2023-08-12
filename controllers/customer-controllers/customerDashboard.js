@@ -75,11 +75,13 @@ const getCustomerDashboard = async (req, res) => {
           res.json({
             status: 200,
             error: false,
-            data: {
-              totalPaymentAmount: totalPaymentAmount,
-              totalBookingsAmount: totalBookingsPayment,
-              bookings: filteredBookings.length,
-            },
+            data: [
+              {
+                totalPaymentAmount: totalPaymentAmount,
+                totalBookingsAmount: totalBookingsPayment,
+                bookings: filteredBookings.length,
+              },
+            ],
             msg: `Dashboard fetched`,
           });
         }
