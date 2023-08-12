@@ -38,7 +38,7 @@ const addBooking = asyncHandler(async (req, res) => {
       !bookingPrice ||
       !bookingPaymentStatus ||
       (bookingPaymentStatus.toUpperCase() === "CARD" && !bookingPaidAmount) ||
-      !bookingService
+      !bookingServices
     ) {
       return res.status(400).json({
         error: true,
@@ -86,7 +86,9 @@ const addBooking = asyncHandler(async (req, res) => {
       bookingStatus,
       bookingPrice,
       bookingPaymentStatus:
-        bookingPaymentStatus.toUpperCase() === "CARD" ? "FULL" : bookingPaymentStatus.toUpperCase(),
+        bookingPaymentStatus.toUpperCase() === "CARD"
+          ? "FULL"
+          : bookingPaymentStatus.toUpperCase(),
       bookingPaidAmount:
         bookingPaymentStatus.toUpperCase() === "CARD" ? bookingPrice : 0,
       bookingRemainingAmount: Math.max(bookingPrice - bookingPaidAmount, 0),
@@ -113,15 +115,15 @@ const addBooking = asyncHandler(async (req, res) => {
       })
     );
 
-    await Promise.all(
-      serviceArray.map(async (serviceId) => {
-        const fetchedService = await Service.findById(serviceId);
-        if (fetchedService) {
-          fetchedService.serviceBookings.push(newBooking._id);
-          await fetchedService.save();
-        }
-      })
-    );
+    // await Promise.all(
+    //   serviceArray.map(async (serviceId) => {
+    //     const fetchedService = await Service.findById(serviceId);
+    //     if (fetchedService) {
+    //       fetchedService.serviceBookings.push(newBooking._id);
+    //       await fetchedService.save();
+    //     }
+    //   })
+    // );
 
     return res.status(200).json({
       error: false,
