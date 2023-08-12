@@ -99,7 +99,7 @@ const makePayment = asyncHandler(async (req, res) => {
         } else {
           const createPayment = await Payment.create({
             customer: customerId,
-            bookingId: bookingId,
+            bookingId: updatedBooking.bookingId,
             payment: paymentMethod,
             paymentAmount: amount,
           });
