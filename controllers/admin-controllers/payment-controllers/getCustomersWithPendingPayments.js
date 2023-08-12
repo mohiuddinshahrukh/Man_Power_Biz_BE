@@ -1,4 +1,5 @@
 const User = require("../../../models/userModel");
+
 const getCustomerWithPayments = async (req, res) => {
   try {
     const customers = await User.find({
@@ -6,14 +7,16 @@ const getCustomerWithPayments = async (req, res) => {
       bookings: { $exists: true, $not: { $size: 0 } },
     }).populate({
       path: "bookings",
-      populate: {
-        path: "bookingPackage.package",
-        model: "Package", // Make sure to provide the correct model name
-      },
-      populate: {
-        path: "bookingService",
-        model: "Service", // Make sure to provide the correct model name
-      },
+      populate: [
+        {
+          path: "bookingPackage.package",
+          model: "Package", // Replace with your actual Package model name
+        },
+        {
+          path: "bookingService",
+          model: "Service", // Replace with your actual Service model name
+        },
+      ],
     });
 
     if (!customers) {
