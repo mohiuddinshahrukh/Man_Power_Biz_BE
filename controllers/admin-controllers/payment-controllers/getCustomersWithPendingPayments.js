@@ -6,6 +6,10 @@ const getCustomerWithPayments = async (req, res) => {
       bookings: { $exists: true, $not: { $size: 0 } },
     }).populate({
       path: "bookings",
+      populate: {
+        path: "bookingPackage.package",
+        model: "Package", // Make sure to provide the correct model name
+      },
     });
 
     if (!customers) {
@@ -14,23 +18,14 @@ const getCustomerWithPayments = async (req, res) => {
         error: true,
         msg: `Error in fetching customers with bookings`,
       });
-    } else {
-      let unpaidBookings = [];
-
-      customers.forEach((customer) => {
-        const unpaidCustomerBookings = customer.bookings.filter((booking) => {
-          return booking.bookingPaymentStatus?.toUpperCase() !== "FULL";
-        });
-        unpaidBookings.push(...unpaidCustomerBookings);
-      });
-
-      res.json({
-        status: 200,
-        data: unpaidBookings,
-        error: false,
-        msg: `Successfully fetched bookings with pending payments`,
-      });
     }
+
+    res.json({
+      status: 200,
+      data: customers,
+      error: false,
+      msg: `Successfully fetched customers with bookings`,
+    });
   } catch (error) {
     res.json({
       status: 400,
