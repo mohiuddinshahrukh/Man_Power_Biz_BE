@@ -61,6 +61,18 @@ const serviceSchema = mongoose.Schema(
       type: String,
       required: [true, "Please provide an email"],
     },
+    serviceWebsiteLink: {
+      type: String,
+      required: [true, "Please provide an email"],
+    },
+    serviceFacebookLink: {
+      type: String,
+      required: [true, "Please provide an email"],
+    },
+    serviceInstagramLink: {
+      type: String,
+      required: [true, "Please provide an email"],
+    },
   },
 
   {

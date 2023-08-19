@@ -72,6 +72,9 @@ const addService = asyncHandler(async (req, res) => {
       serviceVideos,
       servicePDF,
       serviceAddress,
+      serviceWebsiteLink,
+      serviceFacebookLink,
+      serviceInstagramLink,
     } = req.body;
 
     if (
@@ -83,7 +86,10 @@ const addService = asyncHandler(async (req, res) => {
       !serviceZipCode ||
       !serviceContactPhone ||
       !serviceWhatsAppPhone ||
-      !serviceInfoEmail
+      !serviceInfoEmail ||
+      !serviceWebsiteLink ||
+      !serviceFacebookLink ||
+      !serviceInstagramLink
     ) {
       res.json({
         status: 400,
@@ -102,10 +108,13 @@ const addService = asyncHandler(async (req, res) => {
         serviceAddress: serviceAddress,
         serviceZipCode: serviceZipCode,
         serviceCity: serviceCity,
-        serviceCoverImage: serviceImages.length > 0 ? serviceImages[0] : '',
+        serviceCoverImage: serviceImages.length > 0 ? serviceImages[0] : "",
         serviceImages: serviceImages ? serviceImages : [],
         serviceVideos: serviceVideos ? serviceVideos : [],
         servicePDF: servicePDF ? servicePDF : [],
+        serviceWebsiteLink,
+        serviceFacebookLink,
+        serviceInstagramLink,
       });
       if (service) {
         const category = await Category.findById(serviceCategory);
