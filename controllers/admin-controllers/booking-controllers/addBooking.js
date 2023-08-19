@@ -74,7 +74,7 @@ const addBooking = asyncHandler(async (req, res) => {
       quantity: pkg.quantity,
     }));
 
-    const serviceArray = bookingServices;
+    const serviceArray = bookingServices.map((service) => service._id);
 
     const newBooking = await Booking.create({
       bookingId:
