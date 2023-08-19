@@ -8,13 +8,17 @@ const getAllPackages = asyncHandler(async (req, res) => {
       select: "serviceTitle",
       options: { lean: true },
     });
-    const packagesData = packages.map((package) => {
+    const packagesData = packages?.map((package) => {
       const { ...packageData } = package.toObject();
-      const { _id: serviceId, ...serviceData } = packageData.packageService;
-      return {
-        ...packageData,
-        ...serviceData,
-      };
+      const packageService = packageData.packageService;
+      if (packageService) {
+        const { _id: serviceId, ...serviceData } = packageService;
+        return {
+          ...packageData,
+          ...serviceData,
+        };
+      }
+      return packageData; // No packageService, return original packageData
     });
     res.json({
       status: 200,
