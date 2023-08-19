@@ -48,14 +48,16 @@ const addBooking = asyncHandler(async (req, res) => {
       (bookingPaymentStatus.toUpperCase() === "CARD" && !bookingPaidAmount) ||
       !bookingServices
     ) {
-      return res.status(400).json({
+      return res.json({
+        status: 400,
         error: true,
         msg: "Missing required fields or invalid data",
       });
     }
 
     if (!mongoose.Types.ObjectId.isValid(bookingCustomer._id)) {
-      return res.status(400).json({
+      return res.json({
+        status: 400,
         error: true,
         msg: "Invalid customer ID",
       });
@@ -63,7 +65,8 @@ const addBooking = asyncHandler(async (req, res) => {
 
     const fetchCustomer = await User.findById(bookingCustomer._id);
     if (!fetchCustomer) {
-      return res.status(400).json({
+      return res.json({
+        status: 400,
         error: true,
         msg: "Customer not found",
       });
@@ -107,7 +110,8 @@ const addBooking = asyncHandler(async (req, res) => {
     });
 
     if (!updateUser) {
-      return res.status(400).json({
+      return res.json({
+        status: 400,
         error: true,
         msg: "User couldn't be updated.",
       });
@@ -123,14 +127,16 @@ const addBooking = asyncHandler(async (req, res) => {
       })
     );
 
-    return res.status(200).json({
+    return res.json({
+      status: 200,
       error: false,
       data: newBooking,
       msg: "Booking created successfully",
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({
+    return res.json({
+      status: 500,
       error: true,
       msg: "An error occurred while processing your request",
     });
