@@ -48,7 +48,7 @@ const addBooking = asyncHandler(async (req, res) => {
       (bookingPaymentStatus.toUpperCase() === "CARD" && !bookingPaidAmount) ||
       !bookingServices
     ) {
-      return res.json({
+            return res.json({
         status: 400,
         error: true,
         msg: "Missing required fields or invalid data",
@@ -138,7 +138,7 @@ const addBooking = asyncHandler(async (req, res) => {
     return res.json({
       status: 500,
       error: true,
-      msg: "An error occurred while processing your request",
+      msg: `${error}`,
     });
   }
 });
